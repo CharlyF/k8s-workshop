@@ -280,12 +280,18 @@ datadog:
   #     instances:
   #       - host: "name"
   #         port: "6379"
-  #   kubernetes_state.yaml: |-
-  #     ad_identifiers:
-  #       - kube-state-metrics
-  #     init_config:
-  #     instances:
-  #       - kube_state_url: http://%%host%%:8080/metrics
+    etcd.yaml: |-
+      ad_identifiers:
+        - etcd
+      init_config:
+      instances:
+        - prometheus_url: "https://%%host%%:2379/metrics"
+          ssl_verify: "false"
+          use_preview: "true"
+          ssl_ca_cert: "/keys/ca.crt"
+          ssl_cert: "/keys/peer.crt"
+          ssl_private_key: "/keys/peer.key"
+
 
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code
