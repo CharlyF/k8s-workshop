@@ -552,7 +552,7 @@ clusterAgent:
 
   ## @param healthPort - integer - optional - default: 5555
   ## Port number use the cluster-agent to server healthz endpoint
-  healthPort: 1234
+  healthPort: 5555
 
   ## @param livenessProbe - object - required
   ## Override the agent's liveness probe logic from the default:
