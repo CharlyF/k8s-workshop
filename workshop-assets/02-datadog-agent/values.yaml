@@ -233,7 +233,7 @@ datadog:
     ## Enable this to enable APM and tracing, on port 8126
     ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
     #
-    enabled: false
+    enabled: true
 
     ## @param port - integer - optional - default: 8126
     ## Override the trace Agent port.
@@ -568,7 +568,7 @@ clusterAgent:
     periodSeconds: 15
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 6
+    failureThreshold: 3
 
   ## @param readinessProbe - object - required
   ## Override the cluster-agent's readiness probe logic from the default:
@@ -582,7 +582,7 @@ clusterAgent:
     periodSeconds: 15
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 6
+    failureThreshold: 3
 
   ## @param strategy - string - required
   ## Allow the Cluster Agent deployment to perform a rolling update on helm update
