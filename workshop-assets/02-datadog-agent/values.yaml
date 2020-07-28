@@ -126,7 +126,7 @@ datadog:
   ##
   ## Learn more about tagging: https://docs.datadoghq.com/tagging/
   #
-  tags: []
+  tags: ["cluster_name:dash-conf","workshop:k8s-outages"]
   #   - "<KEY_1>:<VALUE_1>"
   #   - "<KEY_2>:<VALUE_2>"
 
@@ -274,25 +274,18 @@ datadog:
   ## ref: https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent#optional-volumes
   ## ref: https://docs.datadoghq.com/agent/autodiscovery/
   #
-  confd: {}
+  confd:
   #   redisdb.yaml: |-
   #     init_config:
   #     instances:
   #       - host: "name"
   #         port: "6379"
-    etcd.yaml: |-
-      ad_identifiers:
-        - etcd
-      init_config:
-      instances:
-        - prometheus_url: "https://%%host%%:2379/metrics"
-          ssl_verify: "false"
-          use_preview: "true"
-          ssl_ca_cert: "/keys/ca.crt"
-          ssl_cert: "/keys/peer.crt"
-          ssl_private_key: "/keys/peer.key"
-
-
+      kube_audit.yaml: |
+        logs:
+        - type: file
+          path: /var/log/kubernetes/apiserver/audit.log
+          service: kube-apiserver-audit
+          source: kubernetes.audit
   ## @param checksd - list of key:value strings - optional
   ## Provide additional custom checks as python code
   ## Each key becomes a file in /checks.d
@@ -948,9 +941,9 @@ agents:
     - hostPath:
         path: /etc/kubernetes/pki/etcd
       name: etcd-keys
-  #   - hostPath:
-  #       path: <HOST_PATH>
-  #     name: <VOLUME_NAME>
+    - hostPath:
+        path: /var/log/kubernetes
+      name: klogpath
 
   ## @param volumeMounts - list of objects - optional
   ## Specify additional volumes to mount in the dd-agent container
@@ -959,9 +952,9 @@ agents:
     - mountPath: /keys
       name: etcd-keys
       readOnly: true
-  #   - name: <VOLUME_NAME>
-  #     mountPath: <CONTAINER_PATH>
-  #     readOnly: true
+    - name: klogpath
+      mountPath: /var/log/kubernetes
+      readOnly: true
 
   ## @param useHostNetwork - boolean - optional
   ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
@@ -990,7 +983,9 @@ agents:
   ## @param tolerations - array - optional
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   #
-  tolerations: []
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
 
   ## @param nodeSelector - object - optional
   ## Allow the DaemonSet to schedule on selected nodes
