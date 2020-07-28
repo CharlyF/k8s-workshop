@@ -1248,6 +1248,9 @@ kube-state-metrics:
     #
     create: true
 
+  collectors:
+    verticalpodautoscalers: false
+
   serviceAccount:
     ## @param created - boolean - required
     ## If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true
