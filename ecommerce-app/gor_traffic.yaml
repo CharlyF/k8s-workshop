@@ -1,8 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external
+---
 kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: pod-lister
-  namespace: default
+  namespace: external
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -21,7 +26,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: pod-lister
-  namespace: default
+  namespace: external
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,7 +34,7 @@ metadata:
   labels:
     run: gor
   name: load-balancer-traffic
-  namespace: default
+  namespace: external
 spec:
   replicas: 1
   selector:
@@ -45,7 +50,21 @@ spec:
       - image: charlyyfon/dev:gor-0.0.1
         imagePullPolicy: Always
         name: traffic-gen
-      # RBAC and then watch
-      - name: pod-lister
-        image: leocavaille/sample-pod-lister:v1
-      # resource TODO
+        command:
+          - "bin/fake_binary #testing, remove this section before pushing to prod"
+        env:
+          - name: FRONTEND_SERVICE_HOST
+            value: "frontend.default"
+          - name: FRONTEND_SERVICE_PORT
+            value: "30001"
+      - command: ["/bin/sh"]
+        args: ["-c", "while true; do wget frontend.default:30001; sleep 5;done"]
+        image: busybox
+        name: busybox
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "25m"
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
