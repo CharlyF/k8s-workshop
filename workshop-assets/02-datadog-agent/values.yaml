@@ -867,7 +867,8 @@ agents:
       ## Additional environment variables for the trace-agent container.
       #
       env:
-
+        - name: "DD_ENV"
+          value: "ruby-shop"
       ## @param logLevel - string - optional
       ## Set logging verbosity, valid log levels are:
       ## trace, debug, info, warn, error, critical, and off.
