@@ -43,7 +43,7 @@ spec:
           value: "true"
         - name: DD_ANALYTICS_ENABLED
           value: "true"
-        image: arapulido/ecommerce-spree-observability:dev
+        image: ddtraining/ecommerce-frontend:latest
         imagePullPolicy: Always
         name: ecommerce-spree-observability
         ports:
