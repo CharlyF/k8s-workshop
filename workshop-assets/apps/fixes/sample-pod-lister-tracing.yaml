@@ -1,0 +1,6 @@
+spec:
+  template:
+    spec:
+      containers:
+      - image: charlyyfon/sample-pod-lister:tracing
+        name: pod-lister
