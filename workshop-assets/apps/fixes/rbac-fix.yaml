@@ -5,3 +5,5 @@ rules:
   - pods
   verbs:
   - list
+  - get
+  - watch
